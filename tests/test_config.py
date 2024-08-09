@@ -122,7 +122,9 @@ class TestConfig:
         self._assert_defaults(cfg)
         self._assert_model_defaults(cfg)
 
-    def test_cfg_auto_fill_with_large_config(self, tmp_path_home):  # pylint: disable=unused-argument
+    def test_cfg_auto_fill_with_large_config(
+        self, tmp_path_home
+    ):  # pylint: disable=unused-argument
         config_path = tmp_path_home / "config.yaml"
         with open(config_path, "w", encoding="utf-8") as config_file:
             config_file.write(
@@ -171,11 +173,11 @@ version: 1.0.0
 chat:
   model: $HOME/.cache/instructlab/models/granite-7b-lab-Q4_K_M.gguf
 generate:
-  model: ~/.cache/instructlab/models/granite-7b-lab-Q4_K_M.gguf
+  model: $HOME/.cache/instructlab/models/granite-7b-lab-Q4_K_M.gguf
   taxonomy_base: upstream/main
   taxonomy_path: mytaxonomy
   teacher:
-    model_path: ~/.cache/instructlab/models/granite-7b-lab-Q4_K_M.gguf
+    model_path: $HOME/.cache/instructlab/models/granite-7b-lab-Q4_K_M.gguf
     chat_template: tokenizer
     llama_cpp:
       gpu_layers: 1
@@ -202,13 +204,13 @@ serve:
             "$HOME/.cache/instructlab/models/granite-7b-lab-Q4_K_M.gguf"
         )
         assert cfg.generate.model.startswith("/")
-        assert cfg.generate.model == os.path.expanduser(
-            "~/.cache/instructlab/models/granite-7b-lab-Q4_K_M.gguf"
+        assert cfg.generate.model == os.path.expandvars(
+            "$HOME/.cache/instructlab/models/granite-7b-lab-Q4_K_M.gguf"
         )
         # Validate multi level dict
         assert cfg.generate.teacher.model_path.startswith("/")
-        assert cfg.generate.teacher.model_path == os.path.expanduser(
-            "~/.cache/instructlab/models/granite-7b-lab-Q4_K_M.gguf"
+        assert cfg.generate.teacher.model_path == os.path.expandvars(
+            "$HOME/.cache/instructlab/models/granite-7b-lab-Q4_K_M.gguf"
         )
         assert cfg.serve.vllm.vllm_args[0] == os.path.expandvars(
             "--qlora-adapter-name-or-path=$HOME/qlora-adapter-name-or-path"
